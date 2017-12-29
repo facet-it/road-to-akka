@@ -64,6 +64,28 @@ public class CinemaTest {
         reply = probe.expectMsgClass(ProgramStored.class);
         Assert.assertEquals("request2", reply.getRequestId());
         Assert.assertEquals(false, reply.hasProgramChanged());
-        
     }
+    
+    @Test
+    public void testReadingProgram() {
+        TestKit probe = new TestKit(system);
+        ActorRef cinema = system.actorOf(Cinema.props("test"));
+        String[] program = {"13.00-15.00: movie", "15.30-17.00: other movie"};
+        StoreProgram storeProgram = new StoreProgram("storeRequest", program);
+        
+        //first set the program
+        cinema.tell(storeProgram , probe.getRef());
+        probe.expectMsgClass(ProgramStored.class);
+        
+        //then request for the program
+        ReadProgram.ReadProgramRequest request = new ReadProgram.ReadProgramRequest("readRequest");
+        cinema.tell(request, probe.getRef());
+        
+        ReadProgram.ReadProgramResponse response = probe.expectMsgClass(ReadProgram.ReadProgramResponse.class);
+        
+        Assert.assertEquals("readRequest", response.getRequestId());
+        Assert.assertEquals(program.length, response.getProgram().length);
+        Assert.assertEquals(program[0], response.getProgram()[0]);
+    }
+    
 }

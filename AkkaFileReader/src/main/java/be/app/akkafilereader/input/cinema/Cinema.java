@@ -4,6 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class Cinema extends AbstractActor{
@@ -26,6 +27,7 @@ public class Cinema extends AbstractActor{
     @Override
     public Receive createReceive() {
         return receiveBuilder().match(StoreProgram.class, this::setProgram)
+                               .match(ReadProgram.ReadProgramRequest.class, this::readProgram)
                                .build();
     }
     
@@ -41,6 +43,13 @@ public class Cinema extends AbstractActor{
         }
         
         log.info("{} has succesfully stored the program", getSelf());
+    }
+    
+    private void readProgram(ReadProgram.ReadProgramRequest request) {
+        String[] programCopy = Arrays.copyOf(this.program, program.length);
+        ReadProgram.ReadProgramResponse response = new ReadProgram.ReadProgramResponse(request.getRequestId(), programCopy);
+        
+        getSender().tell(response, getSelf());
     }
 
     @Override
