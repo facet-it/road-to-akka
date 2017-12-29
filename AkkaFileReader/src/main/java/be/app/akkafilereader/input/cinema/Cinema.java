@@ -11,7 +11,7 @@ public class Cinema extends AbstractActor{
     private final String name;
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
     private int hashedProgram;
-    private String[] program = null;
+    private String[] program = {};
     
     public Cinema(String name) {
         this.name = name;
@@ -30,12 +30,17 @@ public class Cinema extends AbstractActor{
     }
     
     private void setProgram(StoreProgram storeMessage) {
-        this.program = storeMessage.getProgram();
-        int newHash = Stream.of(program).reduce("", String::concat).hashCode();
+        int newHash = Stream.of(storeMessage.getProgram()).reduce("", String::concat).hashCode();
         if(newHash != this.hashedProgram) {
-            getSender().tell(ProgramHasChanged.class, getSelf());
             this.hashedProgram = newHash;
+            this.program = storeMessage.getProgram();
+            getSender().tell(new ProgramStored(storeMessage.getRequestId(), true), getSelf());
         }
+        else{
+            getSender().tell(new ProgramStored(storeMessage.getRequestId(), false), getSelf());
+        }
+        
+        log.info("{} has succesfully stored the program", getSelf());
     }
 
     @Override

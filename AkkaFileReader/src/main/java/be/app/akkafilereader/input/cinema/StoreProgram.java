@@ -15,4 +15,8 @@ public class StoreProgram {
         String[] programCopy = Arrays.copyOf(program, program.length);
         return programCopy;
     }
+    
+    public String getRequestId() {
+        return this.requestId;
+    }
 }

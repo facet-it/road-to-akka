@@ -5,14 +5,13 @@
  */
 package be.app.akkafilereader.input.cinema;
 
-import akka.actor.AbstractActor;
-import akka.actor.Props;
-import org.junit.After;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -20,75 +19,51 @@ import static org.junit.Assert.*;
  */
 public class CinemaTest {
     
-    public CinemaTest() {
-    }
-    
+    static ActorSystem system;
+
     @BeforeClass
-    public static void setUpClass() {
+    public static void setup() {
+        system = ActorSystem.create();
     }
-    
+
     @AfterClass
-    public static void tearDownClass() {
+    public static void teardown() {
+        TestKit.shutdownActorSystem(system);
+        system = null;
+    }
+   
+    @Test
+    public void testSettingTheProgram() {
+        TestKit probe = new TestKit(system);
+        ActorRef cinema = system.actorOf(Cinema.props("test"));
+        String[] program = {"13.00-15.00: movie", "15.30-17.00: other movie"};
+        StoreProgram request = new StoreProgram("request1", program);
+        cinema.tell(request, probe.getRef());
+        
+        ProgramStored reply = probe.expectMsgClass(ProgramStored.class);
+        Assert.assertEquals("request1", reply.getRequestId());
     }
     
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of props method, of class Cinema.
-     */
     @Test
-    public void testProps() {
-        System.out.println("props");
-        String name = "";
-        Props expResult = null;
-        Props result = Cinema.props(name);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testCheckIfProgramHasChanged() {
+        TestKit probe = new TestKit(system);
+        ActorRef cinema = system.actorOf(Cinema.props("test"));
+        String[] program = {"13.00-15.00: movie", "15.30-17.00: other movie"};
+        StoreProgram request = new StoreProgram("request1", program);
+        cinema.tell(request, probe.getRef());
+        
+        //First time, the program is changed from empty to the program
+        ProgramStored reply = probe.expectMsgClass(ProgramStored.class);
+        Assert.assertEquals("request1", reply.getRequestId());
+        Assert.assertEquals(true, reply.hasProgramChanged());
+        
+        request = new StoreProgram("request2", program);
+        cinema.tell(request, probe.getRef());
+        
+        //When sending the same program, it should not indicate change
+        reply = probe.expectMsgClass(ProgramStored.class);
+        Assert.assertEquals("request2", reply.getRequestId());
+        Assert.assertEquals(false, reply.hasProgramChanged());
+        
     }
-
-    /**
-     * Test of createReceive method, of class Cinema.
-     */
-    @Test
-    public void testCreateReceive() {
-        System.out.println("createReceive");
-        Cinema instance = null;
-        AbstractActor.Receive expResult = null;
-        AbstractActor.Receive result = instance.createReceive();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of postStop method, of class Cinema.
-     */
-    @Test
-    public void testPostStop() throws Exception {
-        System.out.println("postStop");
-        Cinema instance = null;
-        instance.postStop();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of preStart method, of class Cinema.
-     */
-    @Test
-    public void testPreStart() throws Exception {
-        System.out.println("preStart");
-        Cinema instance = null;
-        instance.preStart();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
 }
