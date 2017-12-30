@@ -51,9 +51,11 @@ public class FileReader extends AbstractActor{
             
             StoreProgram storeProgram = new StoreProgram(this.name + System.currentTimeMillis(), program.toArray(new String[program.size()]));
             cinema.tell(storeProgram, getSelf());
+            getSender().tell(new ReadFile.Response(request.getRequestId()), getSelf());
         }
         catch(IOException ioe) {
                 log.error("Exception while reading file in {}. Cause is {}", name, ioe.getMessage());
+                getSender().tell(new ReadFile.Failure(request.getRequestId(), ioe.getMessage()), getSelf());
         }
     }
 
@@ -68,7 +70,4 @@ public class FileReader extends AbstractActor{
         this.cinema = getContext().actorOf(Cinema.props(this.name));
         log.info("Created cinama with name {}", this.name);
     }
-    
-    
-
 }

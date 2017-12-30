@@ -7,6 +7,13 @@ import akka.event.LoggingAdapter;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+/**
+ *  Rules for actors.
+ *  Everything with state needs to be immutable or stateless.
+ *  You don't communicate with actors directly, you use the actor reference to
+ *  send messages. So messages usually do have a request and a reply. This is 
+ *  to keep everything loosely coupled. 
+ */
 public class Cinema extends AbstractActor{
     
     private final String name;

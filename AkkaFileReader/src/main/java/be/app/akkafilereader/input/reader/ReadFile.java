@@ -25,8 +25,10 @@ public class ReadFile {
             return this.requestId;
         }
         
-        // I can safely do this, as Path implementations by Java are 
-        // immutable
+        /*
+            I can safely expose the Path variable as Path implementations by 
+            Java are immutable
+        */
         public Path getFilePath() {
             return this.filePath;
         }
@@ -41,6 +43,24 @@ public class ReadFile {
         
         public String getRequestId() {
             return this.requestId;
+        }
+    }
+    
+    public static class Failure{
+        private final String requestId;
+        private final String errorMessage;
+        
+        public Failure(String requestId, String errorMessage) {
+            this.requestId = requestId;
+            this.errorMessage = errorMessage;
+        }
+        
+        public String getRequestId() {
+            return requestId;
+        }
+        
+        public String getErrorMessage() {
+            return this.errorMessage;
         }
     }
 
