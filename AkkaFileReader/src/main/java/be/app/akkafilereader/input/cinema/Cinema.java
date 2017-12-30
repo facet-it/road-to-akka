@@ -5,6 +5,7 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -49,7 +50,8 @@ public class Cinema extends AbstractActor{
             getSender().tell(new ProgramStored(storeMessage.getRequestId(), false), getSelf());
         }
         
-        log.info("{} has succesfully stored the program", getSelf());
+        String output = Stream.of(this.program).collect(Collectors.joining("|"));
+        log.info("{} has succesfully stored the program: {}", getSelf(), output);
     }
     
     private void readProgram(ReadProgram.ReadProgramRequest request) {
