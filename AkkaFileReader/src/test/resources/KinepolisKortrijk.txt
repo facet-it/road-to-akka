@@ -1,0 +1,9 @@
+14.00-zaal1-Jurassic World
+14.00-zaal2-Ghost Busters
+14.00-zaal3-Paddington
+14.00-zaal4-Lord of the rings
+14.00-zaal5-Bladerunner
+16.30-zaal3-Paddington
+16.30-zaal1-star wars
+16.30-zaal2-Ghost Busters
+16.30-zaal3-Paddington

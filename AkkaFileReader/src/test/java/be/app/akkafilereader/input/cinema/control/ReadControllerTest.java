@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,5 +51,8 @@ public class ReadControllerTest {
     public void updatePrograms() {
         UpdatePrograms.Request request = new UpdatePrograms.Request("test");
         readController.tell(request, probe.getRef());
+        
+        UpdatePrograms.Response response = probe.expectMsgClass(UpdatePrograms.Response.class);
+        Assert.assertEquals("test", response.getId());
     }
 }

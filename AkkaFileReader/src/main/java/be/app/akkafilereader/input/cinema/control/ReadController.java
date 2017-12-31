@@ -57,9 +57,12 @@ public class ReadController extends AbstractActor {
             paths
             .filter(Files::isRegularFile)
             .forEach(handlePaths);
+            
+            getSender().tell(new UpdatePrograms.Response(request.getId()), getSelf());
         }
         catch(IOException ioe) {
             log.error("Exception thrown in {}, reason: {}", identifier, ioe.getMessage());
+            getSender().tell(new UpdatePrograms.Failure(request.getId(), ioe.getMessage()), getSelf());
         }
     }
 

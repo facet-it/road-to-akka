@@ -67,7 +67,7 @@ public class FileReader extends AbstractActor{
     @Override
     public void preStart() throws Exception {
         log.info("Started reader with name {}", name);
-        this.cinema = getContext().actorOf(Cinema.props(this.name));
+        this.cinema = getContext().actorOf(Cinema.props(this.name), name + "-cinema");
         log.info("Created cinama with name {}", this.name);
     }
 }

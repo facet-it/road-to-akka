@@ -63,11 +63,11 @@ public class Cinema extends AbstractActor{
 
     @Override
     public void postStop() throws Exception {
-        log.info("Stopped actor with reference {}", this.name);
+        log.info("Stopped cinema with reference {}", this.name);
     }
 
     @Override
     public void preStart() throws Exception {
-        log.info("Started actor with reference {}", this.name);
+        log.info("Started cinema with reference {}", this.name);
     }
 }

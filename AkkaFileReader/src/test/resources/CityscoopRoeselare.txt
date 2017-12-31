@@ -1,0 +1,6 @@
+14.00-zaal1-Lord of the rings
+14.00-zaal2-Jurassic World
+14.00-zaal3-DeadPool
+16.30-zaal1-Lord of the rings
+16.00-zaal2-Jurassic World
+16.30-zaal3-DeadPool
