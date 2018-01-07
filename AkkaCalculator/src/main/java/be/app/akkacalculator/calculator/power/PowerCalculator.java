@@ -51,14 +51,28 @@ public class PowerCalculator extends AbstractActor{
     private void calculatePower(CalculatePower.Request request) {
         int base = request.getBase();
         int power = request.getPower();
+        Power powerOf = new Power(base, power);
+        Integer result = cache.get(powerOf);
+        
+        if(result == null) {
+            result = doCalculation(base, power);
+            cache.put(powerOf, result);
+        }
+        
+        getSender().tell(new CalculatePower.Response(request.getRequestId(), result), getSelf());
+    }
+    
+    private int doCalculation(int base, int power) {
         int result = 1;
         
         for(int i=power; i > 0; i--) {
             result = result * base;
         }
-        getSender().tell(new CalculatePower.Response(request.getRequestId(), result), getSelf());
+        
+        return result;
     }
     
+    //For now, these don't do much. They are lifecycle hooks
     @Override
     public void postStop() throws Exception {
         log.info("{} has stopped working", NAME);

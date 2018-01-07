@@ -3,21 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.app.akkacalculator.calculator.power;
+package be.app.akkacalculator.calculator.factor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.testkit.javadsl.TestKit;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-
-public class PowerCalculatorTest {
-    private TestKit probe;
+public class FactorsCalculatorTest {
+    
     private static ActorSystem system;
+    private TestKit probe;
     private ActorRef calculator;
     
     @BeforeClass
@@ -34,21 +37,22 @@ public class PowerCalculatorTest {
     @Before
     public void setUp() {
         probe = new TestKit(system);
-        calculator = system.actorOf(PowerCalculator.props(), "Power");
+        calculator = system.actorOf(FactorsCalculator.props(), "Factors");
     }
+
     
     @Test
-    public void itShouldRespondOnACalculatePowerRequest() throws Exception {
-        //create a request
-        CalculatePower.Request request = new CalculatePower.Request("test", 2, 3);
-        //send it to the actor, set the testkit as sender so it can expect a message
+    public void itShouldReturnFactorsOfANumber() throws Exception {
+        Factors.Request request = new Factors.Request("test", 6);
+        List<Integer> factors = Arrays.asList(6,3,2,1);
+        List<Integer> expectedResult = Collections.unmodifiableList(factors);
+        
         calculator.tell(request, probe.getRef());
-        //expect the response
-        CalculatePower.Response result = probe.expectMsgClass(CalculatePower.Response.class);
         
-        assertEquals("test", result.getRequestId());
-        assertEquals(8, result.getResult());
+        Factors.Response response = probe.expectMsgClass(Factors.Response.class);
         
+        assertEquals("test", response.getRequestId());
+        assertEquals(expectedResult, response.getResult());
     }
     
 }
