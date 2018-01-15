@@ -2,6 +2,7 @@ package be.app.akkacalculator.calculator.failure;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;
+import akka.actor.Status;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
@@ -18,6 +19,10 @@ import akka.event.LoggingAdapter;
  * case resembling this one, where the exception is not handled gracefully and just is thrown, 
  * the CompletionStage.handle will execute a function with null parameters, and it will 
  * wait for a returning message (which will never arrive, since we never send one back). 
+ * 
+ * 
+ * I changed the failing actor so that we can look at what happens when it can either
+ * fail or not.
  */
 public class FailingActor extends AbstractActor{
     
@@ -31,10 +36,23 @@ public class FailingActor extends AbstractActor{
 
     @Override
     public Receive createReceive() {
-        return receiveBuilder().matchAny(e -> {log.info("bla");
+        return receiveBuilder()
+                .match(Fail.Request.class, this::handleFailMessage)
+                .matchAny(e -> {log.info("bla");
                                                 throw new Exception("Random exception");
                                               })
-                               .build();
+                .build();
+    }
+    
+    private void handleFailMessage(Fail.Request request) {
+        int failFactor = request.getFailFactor();
+        
+        if(failFactor %2 == 0) {
+            getSender().tell(new Fail.Response(), getSelf());
+        }
+        else{
+            getSender().tell(new Status.Failure(new Exception("Random exception")), getSelf());
+        }
     }
 
     @Override

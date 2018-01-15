@@ -5,6 +5,7 @@ import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import be.app.akkacalculator.calculator.factor.Factors;
 import be.app.akkacalculator.calculator.factor.FactorsCalculator;
+import be.app.akkacalculator.calculator.failure.Fail;
 import be.app.akkacalculator.calculator.failure.FailingActor;
 import be.app.akkacalculator.calculator.power.CalculatePower;
 import be.app.akkacalculator.calculator.power.PowerCalculator;
@@ -38,7 +39,10 @@ public class App {
         
         //handleFailureButWrong(failure);
         
-        handleFailureGoodWay(failure);
+        //handleFailureGoodWay(failure);
+        //doHandleSuccessfullCase(failure);
+        
+        doHandleFailGracefullyCase(failure);
     }
     
     //handle a future and just consume the result
@@ -119,6 +123,44 @@ public class App {
             System.out.println("this is the second parameter " + second);
             return null;
         });
+    }
+    
+    /**
+     * So this will not fail, but we are using the CompletionStage.handle method 
+     * to learn more about the parameters that are returned. Also, since I know
+     * somewhat expect a message back, I can actually make a typed CompletionStage. This
+     * looks not so dirty nor hacky anymore ;-)
+     */
+    public static void doHandleSuccessfullCase(ActorRef ref) {
+        Fail.Request nonFail = new Fail.Request(2);
+        
+        Future result = Patterns.ask(ref, nonFail, 10000);
+        CompletionStage<Fail.Response> stage = FutureConverters.toJava(result);
+        
+        stage.handle((first, second) -> {
+            System.out.println("this is the first parameter " + first);
+            System.out.println("this is the second parameter " + second);
+            return null;
+        });
+    }
+    /**
+     * From these examples we can see that the first parameter of handle is the
+     * response we expect when there is no exception. The second parameter is the 
+     * Status.fail message we sent back when an exception is thrown and handled 
+     * gracefully.
+     */
+    public static void doHandleFailGracefullyCase(ActorRef ref) {
+        Fail.Request doFail = new Fail.Request(3);
+        
+        Future result = Patterns.ask(ref, doFail, 2000);
+        CompletionStage<Fail.Response> stage = FutureConverters.toJava(result);
+        
+        stage.handle((first, second) -> {
+            System.out.println("this is the first parameter " + first);
+            System.out.println("this is the second parameter " + second);
+            return null;
+        });
+        
     }
 
 }
