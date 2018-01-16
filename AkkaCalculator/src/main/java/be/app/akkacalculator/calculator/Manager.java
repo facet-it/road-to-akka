@@ -21,14 +21,22 @@ public class Manager extends AbstractActor{
     }
 
     /**
-     * I know, I know, there is no handling for any other kind of message that might get through yet :-)
+     * I know, I know, there is no handling for any random kind of message that might get through yet :-)
+     * 
+     * IMPORTANT NOTE
+     * when forwarding messages, the original sender is automatically kept. This is awesome, 
+     * as this means that I do not need to configure this manager to deal with the
+     * responses of the forwarded messaged. So what happens when you forward is this: 
+     * client object does managerRef.tell
+     * managerActor receives and does childActor.forward
+     * childactor handles message and does getSender.tell ------ > to client code
+     * 
+     * I hope that this actually makes sense when I read this in the future.
      */
     @Override
     public Receive createReceive() {
         return receiveBuilder().match(CalculatePower.Request.class, this::doPower)
                                .match(Factors.Request.class, this::doFactors)
-                               .match(CalculatePower.Response.class, this::answerPower)
-                               .match(Factors.Response.class, this::answerFactors)
                                .build();
     }
     
@@ -36,16 +44,8 @@ public class Manager extends AbstractActor{
         power.forward(request, this.getContext());
     }
     
-    private void answerPower(CalculatePower.Response response) {
-        getSender().tell(response, getSelf());
-    }
-    
     private void doFactors(Factors.Request request) {
         factors.forward(request, this.getContext());
-    }
-    
-    private void answerFactors(Factors.Response response) {
-        getSender().tell(response, getSelf());
     }
 
     @Override

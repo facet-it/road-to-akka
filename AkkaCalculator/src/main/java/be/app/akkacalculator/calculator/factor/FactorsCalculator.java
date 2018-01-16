@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FactorsCalculator extends AbstractActor{
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), FactorsCalculator.class);
+    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
     private final String NAME = "Factors";
     
     //This will function as an improvised cache.
