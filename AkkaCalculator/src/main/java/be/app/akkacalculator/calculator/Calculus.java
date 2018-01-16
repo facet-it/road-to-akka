@@ -14,11 +14,16 @@ import scala.concurrent.Future;
 
 public class Calculus {
     
-    //this feels a bit bad. The calculus is now also responsible for handling the futures....
-    public final Consumer<CalculatePower.Response> printer = response -> System.out.println(response.getResult());
-    public final Function<CalculatePower.Response, String> powerConverter = response -> "the result of the power is " + response.getResult();
+    /**
+     * this feels a bit bad. The calculus is now also responsible for handling the 
+     * futures.... Following Single Responsibility, if the handling of the resonses 
+     * should change, then this calculus needs to change as well, while it is only 
+     * meant as a gateway for reaching out to Actors.
+     */
+    private final Consumer<CalculatePower.Response> printer = response -> System.out.println(response.getResult());
+    private final Function<CalculatePower.Response, String> powerConverter = response -> "the result of the power is " + response.getResult();
     //its easier to write then to read which is not so good
-    public final Consumer<List<Integer>> printFactors = list -> list.stream().forEach(factor -> System.out.println("this is a factor: " + factor));
+    private final Consumer<List<Integer>> printFactors = list -> list.stream().forEach(factor -> System.out.println("this is a factor: " + factor));
     private final ActorRef manager;
     
     public Calculus() {
