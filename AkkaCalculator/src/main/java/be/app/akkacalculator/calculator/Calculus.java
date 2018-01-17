@@ -28,7 +28,7 @@ public class Calculus {
     
     public Calculus() {
         ActorSystem system = ActorSystem.create("calculus");
-        manager = system.actorOf(Manager.props());
+        manager = system.actorOf(Manager.props(), "manager");
     }
     
     public void calculatePowerOf(int base, int power) {
