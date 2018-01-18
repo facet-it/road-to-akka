@@ -1,8 +1,6 @@
 package be.app.akkacalculator.input;
 
 import be.app.akkacalculator.calculator.Calculus;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CommandFactory {
@@ -17,7 +15,7 @@ public class CommandFactory {
     //also a bit shady. This needs to change
     public Command parseCommandFrom(String input) {
         String[] inputCommands = input.split("of");
-        int[] params = parseParameters(inputCommands[1]);
+        Integer[] params = parseParameters(inputCommands[1]);
         
         switch(inputCommands[0].trim()) {
             case "do power": 
@@ -30,17 +28,17 @@ public class CommandFactory {
         }
     }
     
-    private int[] parseParameters(String parameters) {
+    private Integer[] parseParameters(String parameters) {
         String[] separatedParams = parameters.split(",");
         int[] params = new int[separatedParams.length];
         
-        for(int i = 0; i < separatedParams.length; i++) {
-            if(Character.isDigit(separatedParams[i].charAt(0))) {
-                params[i] = Integer.parseInt(separatedParams[i]);
-            }
-        }
+        //nailed it! :-)
+        Integer[] result = Stream.of(separatedParams).map(String::trim)
+                                                     .filter(item -> Character.isDigit(item.charAt(0)))
+                                                     .map(Integer::parseInt)
+                                                     .toArray(Integer[]::new);
         
-        return params;
+        return result;
     }
 
 }
