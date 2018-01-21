@@ -24,7 +24,8 @@ public class Test {
         //This will throw an exception: 
         //ActorRef creation1 = system.actorOf(ActorCreation1.props(true, 100), "actorCreation1");
         
-        ActorRef creation2 = system.actorOf(ActorCreation2.props(true, 100), "actorCreation2");
+        //ActorRef creation2 = system.actorOf(ActorCreation2.props(true, 100), "actorCreation2");
+        ActorRef creation3 = system.actorOf(ActorCreation3.pros(100, true));
         
     }
 

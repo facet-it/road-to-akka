@@ -9,7 +9,8 @@ import akka.event.LoggingAdapter;
  * Instantiating this actor will fail because there is no real implementation of
  * createReceive. 
  * 
- * It has to be noted that when creating a
+ * In a straight up unit test, this seem to work, but in a main method, probably
+ * during initialisation, an exception is thrown.
  */
 public class ActorCreation2 extends AbstractActor{
     
