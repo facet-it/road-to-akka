@@ -14,10 +14,18 @@ public class Test {
         //And exception is thrown! How crazy is that!
         /*
             Exception in thread "main" akka.actor.ActorInitializationException: You cannot create an instance of [be.app.makingactors.GoodStringAnalyzer] explicitly using the constructor (new). You have to use one of the 'actorOf' factory methods to create a new actor. See the documentation.
-        */
+        
         GoodStringAnalyzer analyzer = new GoodStringAnalyzer(true, 100);
         
         analyzer.createReceive();
+                
+        */
+        
+        //This will throw an exception: 
+        //ActorRef creation1 = system.actorOf(ActorCreation1.props(true, 100), "actorCreation1");
+        
+        ActorRef creation2 = system.actorOf(ActorCreation2.props(true, 100), "actorCreation2");
+        
     }
 
 }
