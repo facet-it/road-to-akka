@@ -7,7 +7,7 @@ import akka.event.LoggingAdapter;
 
 /**
  * So by now we know that we need a constructor. If the arguments match with was is given
- * to the props, even a private constructor will work.
+ * to the props.
  */
 public class ActorCreation3 extends AbstractActor {
     
@@ -16,7 +16,7 @@ public class ActorCreation3 extends AbstractActor {
     private final boolean someBoolean;
     private final int someInt;
     
-    private ActorCreation3(boolean someBoolean, int someInt) {
+    public ActorCreation3(boolean someBoolean, int someInt) {
         this.someBoolean = someBoolean;
         this.someInt = someInt;
     }

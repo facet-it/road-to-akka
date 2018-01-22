@@ -8,25 +8,24 @@ public class Test {
     public static void main(String[] args){
         ActorSystem system = ActorSystem.create("test");
         
-        //ActorRef test = system.actorOf(GoodStringAnalyzer.props(true, 100), "test");
-        
-        //just instatiating an actor... which is bad. What would happen?
-        //And exception is thrown! How crazy is that!
-        /*
-            Exception in thread "main" akka.actor.ActorInitializationException: You cannot create an instance of [be.app.makingactors.GoodStringAnalyzer] explicitly using the constructor (new). You have to use one of the 'actorOf' factory methods to create a new actor. See the documentation.
-        
-        GoodStringAnalyzer analyzer = new GoodStringAnalyzer(true, 100);
-        
-        analyzer.createReceive();
-                
-        */
-        
         //This will throw an exception: 
         //ActorRef creation1 = system.actorOf(ActorCreation1.props(true, 100), "actorCreation1");
         
         //ActorRef creation2 = system.actorOf(ActorCreation2.props(true, 100), "actorCreation2");
-        ActorRef creation3 = system.actorOf(ActorCreation3.pros(100, true));
+        ActorRef creation3 = system.actorOf(ActorCreation3.props(100, true));
         
+    }
+    
+    /**
+     * When actors have a public constructor, you might be tempted to try and 
+     * instantiate one without the use of the ActorSystem, just like that. Well, 
+     * actors are supposed to be very encapsulated. The compiler will not complain
+     * when you do so, but there will be an exception thrown at runtime!
+     */
+    public static void createActorWithoutTheSystem() {
+        ActorCreation3 actor = new ActorCreation3(true, 100);
+        
+        actor.createReceive();
     }
 
 }
