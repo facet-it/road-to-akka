@@ -8,12 +8,12 @@ public class App {
     public static void main(String[] args) {
         ActorSystem system = ActorSystem.create();
         
-        ActorRef supervisor = system.actorOf(Supervisor.props());
+        ActorRef supervisor = system.actorOf(Supervisor.props(), "supervisor");
         
         supervisor.tell("go", ActorRef.noSender());
         
         try{
-            Thread.sleep(15000);
+            Thread.sleep(16000);
         }
         catch(InterruptedException ir) {
             ir.printStackTrace();
@@ -22,13 +22,31 @@ public class App {
         supervisor.tell("stop", ActorRef.noSender());
         
         try{
-            Thread.sleep(15000);
+            Thread.sleep(16000);
         }
         catch(InterruptedException ir) {
             ir.printStackTrace();
         }
         
         supervisor.tell("forceStop", ActorRef.noSender());
+        
+        try{
+            Thread.sleep(16000);
+        }
+        catch(InterruptedException ir) {
+            ir.printStackTrace();
+        }
+        
+        supervisor.tell("killIt", ActorRef.noSender());
+        
+        try{
+            Thread.sleep(16000);
+        }
+        catch(InterruptedException ir) {
+            ir.printStackTrace();
+        }
+        
+        supervisor.tell("poisonIt", ActorRef.noSender());
     }
 
 }
