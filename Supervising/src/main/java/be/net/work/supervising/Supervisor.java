@@ -47,7 +47,11 @@ public class Supervisor extends AbstractActor {
 
     @Override
     public Receive createReceive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return receiveBuilder().matchEquals("go", message -> sendToAll()).build();
+    }
+    
+    private void sendToAll() {
+        
     }
 
 }
