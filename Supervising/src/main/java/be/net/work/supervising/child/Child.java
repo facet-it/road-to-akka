@@ -1,12 +1,18 @@
 package be.net.work.supervising.child;
 
 import akka.actor.AbstractActor;
+import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
+import akka.actor.SupervisorStrategy;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.japi.pf.DeciderBuilder;
 import be.net.work.supervising.NeedRestartException;
 import be.net.work.supervising.NeedsStopException;
 import be.net.work.supervising.SmallMistakeException;
+import java.util.concurrent.TimeUnit;
+import scala.PartialFunction;
+import scala.concurrent.duration.Duration;
 
 public class Child extends AbstractActor {
     private final LoggingAdapter logging = Logging.getLogger(getContext().getSystem(), this);
@@ -25,6 +31,17 @@ public class Child extends AbstractActor {
     @Override
     public void preStart() throws Exception {
         logging.info("About to start...");
+    }
+
+    /**
+     * This actor will use the escalate strategy when a child (a grand child of 
+     * the original supervisor actor) throws an 'escalate exception'. 
+     */
+    @Override
+    public SupervisorStrategy supervisorStrategy() {
+        PartialFunction decider = DeciderBuilder.match(EscalateException.class, e -> SupervisorStrategy.escalate()).build();
+        
+        return new OneForOneStrategy(3, Duration.create(1, TimeUnit.MINUTES), decider);
     }
 
     @Override
@@ -54,5 +71,4 @@ public class Child extends AbstractActor {
     private void showState() {
         logging.info(currentState);
     }
-
 }
