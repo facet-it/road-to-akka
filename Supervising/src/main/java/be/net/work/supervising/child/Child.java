@@ -1,6 +1,7 @@
 package be.net.work.supervising.child;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
 import akka.actor.SupervisorStrategy;
@@ -10,6 +11,7 @@ import akka.japi.pf.DeciderBuilder;
 import be.net.work.supervising.NeedRestartException;
 import be.net.work.supervising.NeedsStopException;
 import be.net.work.supervising.SmallMistakeException;
+import be.net.work.supervising.grandchild.GrandChild;
 import java.util.concurrent.TimeUnit;
 import scala.PartialFunction;
 import scala.concurrent.duration.Duration;
@@ -50,6 +52,7 @@ public class Child extends AbstractActor {
                                .matchEquals("stop", message -> doStop())
                                .matchEquals("restart", message -> doRestart())
                                .matchEquals("showState", message -> showState())
+                               .matchEquals("escalate", message -> triggerEscalation())
                                .build();
     }
     
@@ -70,5 +73,11 @@ public class Child extends AbstractActor {
     
     private void showState() {
         logging.info(currentState);
+    }
+    
+    private void triggerEscalation() {
+        this.currentState = "grandchild will not be able to deal with this";
+        ActorRef grandChild = getContext().actorOf(GrandChild.props(), "grandchild");
+        grandChild.tell("escalate", getSelf());
     }
 }
