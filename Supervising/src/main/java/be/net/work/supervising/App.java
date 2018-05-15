@@ -8,7 +8,9 @@ public class App {
     public static void main(String[] args) {
         //generalSupervisingTest();
         
-        testRestartSupervising();
+        //testRestartSupervising();
+        
+        testWrongPatternMatching();
     }
     
     /**
@@ -29,6 +31,16 @@ public class App {
         ActorRef restartSupervisor = system.actorOf(TestRestartSupervisor.props());
         
         restartSupervisor.tell("start", ActorRef.noSender());
+    }
+    
+    /**
+     * Focus on testing wrong pattern matching
+     */
+    public static void testWrongPatternMatching() {
+        ActorSystem system = ActorSystem.create();
+        ActorRef wrongpatternMatching = system.actorOf(WrongSupervisionPatternMatching.props());
+        
+        wrongpatternMatching.tell("start", ActorRef.noSender());
     }
 
 }
